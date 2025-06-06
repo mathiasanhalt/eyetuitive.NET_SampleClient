@@ -1,0 +1,43 @@
+﻿<UserControl x:Class="SampleClient.UserControls.CalibrationPointControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SampleClient.UserControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="60" d:DesignWidth="60">
+    <UserControl.Resources>
+        <Storyboard x:Key="ShowAnimation">
+            <DoubleAnimation Storyboard.TargetName="Point" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.7" />
+            <DoubleAnimation x:Name="ShowAnimationX" Storyboard.TargetName="PointTranslate" Storyboard.TargetProperty="X" Duration="0:0:0.7" />
+            <DoubleAnimation x:Name="ShowAnimationY" Storyboard.TargetName="PointTranslate" Storyboard.TargetProperty="Y" Duration="0:0:0.7" />
+        </Storyboard>
+        <Storyboard x:Key="CollectingAnimation" RepeatBehavior="Forever">
+            <DoubleAnimation Storyboard.TargetName="Point" Storyboard.TargetProperty="StrokeThickness" From="5" To="10" AutoReverse="True" Duration="0:0:0.5" />
+        </Storyboard>
+        <Storyboard x:Key="HideAnimation">
+            <DoubleAnimation Storyboard.TargetName="Point" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.5" />
+        </Storyboard>
+        <Storyboard x:Key="ShowResultAnimation">
+            <DoubleAnimation Storyboard.TargetName="ResultEllipse" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.5" />
+            <DoubleAnimation Storyboard.TargetName="ResultLabel" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.5" />
+        </Storyboard>
+        <Storyboard x:Key="HideResultAnimation">
+            <DoubleAnimation Storyboard.TargetName="ResultEllipse" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.3" />
+            <DoubleAnimation Storyboard.TargetName="ResultLabel" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.3" />
+        </Storyboard>
+    </UserControl.Resources>
+    <Grid RenderTransformOrigin="0.5,0.5" Width="50" Height="50" MouseLeftButtonDown="Grid_MouseLeftButtonDown" Cursor="Hand">
+        <Grid.RenderTransform>
+            <TransformGroup>
+                <TranslateTransform x:Name="PointTranslate" />
+                <ScaleTransform x:Name="PointScale" />
+            </TransformGroup>
+        </Grid.RenderTransform>
+        <Ellipse x:Name="Point" Width="20" Height="20" Stroke="Black" StrokeThickness="5" Fill="White"/>
+        <Ellipse x:Name="ResultEllipse" Width="30" Height="30" Fill="Red" Opacity="0"/>
+        <Label x:Name="ResultLabel" Content="100" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="12" FontWeight="Bold" Opacity="0"/>
+        <Ellipse x:Name="SelectionRing" Width="40" Height="40" Stroke="Blue" StrokeThickness="3" Fill="Transparent" Opacity="0"/>
+    </Grid>
+</UserControl>
+
