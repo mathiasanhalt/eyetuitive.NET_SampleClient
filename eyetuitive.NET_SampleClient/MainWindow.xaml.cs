@@ -151,6 +151,7 @@ public partial class MainWindow : Window
             device.Gaze.StartGazeTracking(gazeHandler);
             isConnected = true;
             logger.Information("Connected to eyetuitive device successfully.");
+            device.Settings?.updateHostSettings();
         }
         else
             logger.Error("Failed to connect to eyetuitive device.");
