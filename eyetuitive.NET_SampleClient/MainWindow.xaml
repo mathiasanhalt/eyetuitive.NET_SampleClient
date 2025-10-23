@@ -14,6 +14,7 @@
                 <Button Content="Calibrate" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="20" Click="Calib_Click"/>
                 <Button Content="Calibrate Manual" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="20" Click="CalibManual_Click"/>
                 <Button Content="Cancel Calib" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="20" Click="CalibCancel_Click"/>
+                <Button Content="End Calib" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="20" Click="CalibEnd_Click"/>
                 <Button Content="Confirm Point" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="20" Click="ConfirmCalibPoint_Click"/>
                 <Button Content="Improve Points" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="20" Click="ImproveCalib_Click"/>
                 <Button Content="Show debug log" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="20" Click="Debug_Click"/>

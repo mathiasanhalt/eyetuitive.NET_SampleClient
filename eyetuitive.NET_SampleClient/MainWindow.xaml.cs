@@ -20,7 +20,12 @@ public partial class MainWindow : Window
     /// <summary>
     /// Device instance for the GazeFirst eyetuitive eye tracker
     /// </summary>
-    private GazeFirst.eyetuitive device = new GazeFirst.eyetuitive();
+    private GazeFirst.eyetuitive device = new GazeFirst.eyetuitive("192.168.137.2");
+
+    private bool confirmPointUI = false;// true;
+    private bool multipoint = false;
+    private int timeoutPoint = 0;
+    private List<int> list = new List<int>();
 
     private Serilog.Core.Logger logger;
     private int ScreenResWidth, ScreenResHeight;
@@ -306,7 +311,13 @@ public partial class MainWindow : Window
             Width = ScreenSizeWidthMM,
             Height = ScreenSizeHeightMM,
         };
-        CalibTask = device.Calibration.StartCalibrationAsync(device_CalibrationPointUpdate, device_CalibFinished, dims, multipoint: true);
+        CalibTask = device.Calibration.StartCalibrationAsync(device_CalibrationPointUpdate, device_CalibFinished, dims,
+            multipoint: false,
+            fixationBased: true,
+            manualCalibration: false,
+            ConfirmCollectionPoints: confirmPointUI,
+            points: CalibrationPoints.Five,
+            timeoutPerPoint: timeoutPoint);
     }
 
     /// <summary>
@@ -332,7 +343,15 @@ public partial class MainWindow : Window
     /// <param name="e"></param>
     private void ConfirmCalibPoint_Click(object sender, RoutedEventArgs e)
     {
-        device.Calibration.ConfirmPoint();
+        if (confirmPointUI)
+        {
+            int[] ps = list.ToArray();
+            logger.Information("Confirming calibration points: {points}", string.Join(", ", ps));
+            device.Calibration.ConfirmCollectionPoints(ps);
+            list.Clear();
+        }
+        else
+            device.Calibration.ConfirmPoint();
     }
 
     /// <summary>
@@ -363,6 +382,11 @@ public partial class MainWindow : Window
     {
         device.Calibration.StopCalibration();
         ResetPoints();
+    }
+
+    private void CalibEnd_Click(object sender, RoutedEventArgs e)
+    {
+        device.Calibration.FinishCalibration();
     }
 
     /// <summary>
@@ -405,6 +429,15 @@ public partial class MainWindow : Window
     private void device_CalibrationPointUpdate(object sender, CalibrationPointUpdateArgs obj)
     {
         logger.Information($"Calibration point update event: # {obj.sequenceNumber}, State = {obj.state}, Position: {obj.target.ToString()}");
+        int sequenceNumber = obj.sequenceNumber;
+        if (obj.state == CalibrationPointState.Show)
+        {
+            // Add the sequence number to the list for confirmation later
+            if (!list.Contains(sequenceNumber))
+            {
+                list.Add(sequenceNumber);
+            }
+        }
         Dispatcher.Invoke(() =>
         {
             CalibrationPointControl p = getCalibPointControlFromList(obj.sequenceNumber);
@@ -473,6 +506,7 @@ public partial class MainWindow : Window
         {
             Dispatcher.Invoke(p.Reset);
         }
+        list.Clear();
     }
 
     #endregion
